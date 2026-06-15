@@ -7,7 +7,7 @@ public class Endpoint : EndpointWithoutRequest<string>
     public override void Configure()
     {
         Get("/test");
-        AllowAnonymous();
+        Roles("Admin", "User");
     }
 
     public override async Task<string> ExecuteAsync(CancellationToken ct)
