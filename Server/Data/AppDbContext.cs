@@ -7,4 +7,5 @@ public class AppDbContext (DbContextOptions<AppDbContext> options) : DbContext(o
 {
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<RoleEntity> Roles { get; set; }
+    public DbSet<AnimeEntity> Animes { get; set; }
 }

@@ -50,6 +50,7 @@ public class GlobalExceptionHandler(RequestDelegate next, ILogger<GlobalExceptio
                     UnauthorizedException or UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
                     NotFoundException or KeyNotFoundException => StatusCodes.Status404NotFound,
                     ConflictException => StatusCodes.Status409Conflict,
+                    JikanApiException => StatusCodes.Status502BadGateway,
                     InternalServerException => StatusCodes.Status500InternalServerError,
                     _ => StatusCodes.Status500InternalServerError
                 };

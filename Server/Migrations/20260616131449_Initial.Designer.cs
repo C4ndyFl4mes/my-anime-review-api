@@ -12,7 +12,7 @@ using Server.Data;
 namespace Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260615140618_Initial")]
+    [Migration("20260616131449_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -24,6 +24,65 @@ namespace Server.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Server.Entities.AnimeEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AgeRating")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("AiringStatus")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Duration")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("LastSynced")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("MalUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MetaDataJSON")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("Season")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Source")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Synopsis")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("TotalEpisodes")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TrailerUrl")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("Year")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Animes");
+                });
 
             modelBuilder.Entity("Server.Entities.RoleEntity", b =>
                 {
