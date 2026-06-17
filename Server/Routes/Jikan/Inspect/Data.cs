@@ -23,7 +23,7 @@ public class JikanInspectData(AppDbContext ctx)
     /// </summary>
     /// <returns>The anime details.</returns>
     /// <exception cref="JikanApiException">Thrown when there is an error fetching or processing anime data from Jikan API.</exception>
-    public async Task<Anime> GetAnimeAsync(int id, CancellationToken ct)
+    public async Task<Anime> GetAnimeAsync(int id, Guid currentUserId, CancellationToken ct)
     {
         Anime? existingAnime = await TryGetAnimeAsync(id, ct);
         if (existingAnime is not null && existingAnime.LastSynced <= DateTime.UtcNow.AddDays(-7))
@@ -74,7 +74,48 @@ public class JikanInspectData(AppDbContext ctx)
         {
             Anime anime = payload.Data.ToAnime();
 
-            return await AddOrUpdateAnimeAsync(anime, ct) ?? anime;
+            Anime? inspectedAnime = await AddOrUpdateAnimeAsync(anime, ct) ?? anime;
+
+            List<ReviewEntity> reviews = await ctx.Reviews
+            .AsNoTracking()
+            .Where(r => r.AnimeId == inspectedAnime.MalId)
+            .Include(r => r.User)
+            .Include(r => r.HelpfulByUsers)
+            .ToListAsync(ct);
+
+            
+            ReviewEntity? currentUserReview = reviews.FirstOrDefault(r => r.UserId == currentUserId);
+            inspectedAnime.TotalReviews = reviews.Count;
+            inspectedAnime.TopReviews = reviews
+                .OrderByDescending(r => r.HelpfulByUsers.Count)
+                .ThenByDescending(r => r.CreatedAt)
+                .Take(3)
+                .Select(r => new Review.Review
+                {
+                    Id = r.Id,
+                    Text = r.Text,
+                    Score = r.Score,
+                    Username = r.User.Username,
+                    ProfileImageURL = r.User.ProfileImageURL,
+                    HelpfulCount = r.HelpfulByUsers.Count,
+                    IsHelpfulByCurrentUser = r.HelpfulByUsers.Any(h => h.UserId == currentUserId)
+                })
+                .ToList();
+            
+            inspectedAnime.CurrentUserReview = currentUserReview is not null ? new Review.Review
+            {
+                Id = currentUserReview.Id,
+                Text = currentUserReview.Text,
+                Score = currentUserReview.Score,
+                Username = currentUserReview.User.Username,
+                ProfileImageURL = currentUserReview.User.ProfileImageURL,
+                HelpfulCount = currentUserReview.HelpfulByUsers.Count,
+                IsHelpfulByCurrentUser = currentUserReview.HelpfulByUsers.Any(h => h.UserId == currentUserId)
+            } : null;
+
+            inspectedAnime.CanCurrentUserMakeReview = currentUserId != Guid.Empty && currentUserReview == null;
+
+            return inspectedAnime;
         }
         catch (DbUpdateException ex)
         {

@@ -1,12 +1,13 @@
 using System.Text.Json.Serialization;
 using Server.Enums;
+using Server.Routes.Review;
 
 namespace Server.Routes.Jikan;
 
 public record JikanSearchResponse
 {
     [JsonPropertyName("pagination")]
-    public JikanPagination Pagination { get; set; } = new();
+    public Pagination Pagination { get; set; } = new();
     [JsonPropertyName("data")]
     public List<AnimeSearchItem> Data { get; set; } = [];
 }
@@ -14,7 +15,7 @@ public record JikanSearchResponse
 public record JikanAnimeResponse
 {
     [JsonPropertyName("pagination")]
-    public JikanPagination Pagination { get; set; } = new();
+    public Pagination Pagination { get; set; } = new();
     [JsonPropertyName("data")]
     public List<JikanAnimeData> Data { get; set; } = [];
 }
@@ -135,7 +136,7 @@ public record JikanAiredProp
     public string? String { get; set; }
 }
 
-public record JikanPagination
+public record Pagination
 {
     [JsonPropertyName("last_visible_page")]
     public int LastVisiblePage { get; set; }
@@ -145,10 +146,10 @@ public record JikanPagination
     [JsonPropertyName("current_page")]
     public int CurrentPage { get; set; }
     [JsonPropertyName("items")]
-    public JikanItems Items { get; set; } = new();
+    public Items Items { get; set; } = new();
 }
 
-public record JikanItems
+public record Items
 {
     [JsonPropertyName("count")]
     public int Count { get; set; }
@@ -178,6 +179,10 @@ public record Anime
     public string? Source { get; set; }
     public AnimeMetaData? MetaData { get; set; }
     public DateTime LastSynced { get; set; }
+    public List<Review.Review> TopReviews { get; set; } = [];
+    public int TotalReviews { get; set; }
+    public Review.Review? CurrentUserReview { get; set; }
+    public bool CanCurrentUserMakeReview { get; set; }
 }
 
 public record AnimeSearchItem

@@ -12,7 +12,7 @@ using Server.Data;
 namespace Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260616131449_Initial")]
+    [Migration("20260617085924_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -84,6 +84,59 @@ namespace Server.Migrations
                     b.ToTable("Animes");
                 });
 
+            modelBuilder.Entity("Server.Entities.HelpfulEntity", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ReviewId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("UserId", "ReviewId");
+
+                    b.HasIndex("ReviewId");
+
+                    b.ToTable("HelpfulMarks");
+                });
+
+            modelBuilder.Entity("Server.Entities.ReviewEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("AnimeId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("character varying(4000)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("AnimeId", "CreatedAt");
+
+                    b.HasIndex("AnimeId", "UserId")
+                        .IsUnique();
+
+                    b.ToTable("Reviews");
+                });
+
             modelBuilder.Entity("Server.Entities.RoleEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -137,6 +190,44 @@ namespace Server.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Server.Entities.HelpfulEntity", b =>
+                {
+                    b.HasOne("Server.Entities.ReviewEntity", "Review")
+                        .WithMany("HelpfulByUsers")
+                        .HasForeignKey("ReviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Entities.UserEntity", "User")
+                        .WithMany("HelpfulReviews")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Review");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Server.Entities.ReviewEntity", b =>
+                {
+                    b.HasOne("Server.Entities.AnimeEntity", "Anime")
+                        .WithMany("Reviews")
+                        .HasForeignKey("AnimeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Entities.UserEntity", "User")
+                        .WithMany("Reviews")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Anime");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Server.Entities.UserEntity", b =>
                 {
                     b.HasOne("Server.Entities.RoleEntity", "Role")
@@ -146,6 +237,23 @@ namespace Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Server.Entities.AnimeEntity", b =>
+                {
+                    b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("Server.Entities.ReviewEntity", b =>
+                {
+                    b.Navigation("HelpfulByUsers");
+                });
+
+            modelBuilder.Entity("Server.Entities.UserEntity", b =>
+                {
+                    b.Navigation("HelpfulReviews");
+
+                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }

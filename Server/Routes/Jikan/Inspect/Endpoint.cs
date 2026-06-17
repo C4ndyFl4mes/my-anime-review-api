@@ -1,5 +1,6 @@
 using FastEndpoints;
 using Server.Data;
+using Server.Utils;
 
 namespace Server.Routes.Jikan.Inspect;
 
@@ -17,9 +18,10 @@ public class JikanInspectEndpoint(AppDbContext ctx) : EndpointWithoutRequest<Ani
     public override async Task<Anime> ExecuteAsync(CancellationToken ct)
     {
         int malId = Route<int>("malId");
+        Guid currentUserId = UserUtils.GetAuthenticatedUserID();
 
         JikanInspectData data = new(ctx);
 
-        return await data.GetAnimeAsync(malId, ct);
+        return await data.GetAnimeAsync(malId, currentUserId, ct);
     }
 }

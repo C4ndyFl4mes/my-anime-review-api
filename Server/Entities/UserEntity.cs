@@ -13,4 +13,7 @@ public class UserEntity
 
     public Guid RoleId { get; set; }
     public required RoleEntity Role { get; set; }
+
+    public ICollection<ReviewEntity> Reviews { get; set; } = [];
+    public ICollection<HelpfulEntity> HelpfulReviews { get; set; } = [];
 }
