@@ -10,6 +10,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<AnimeEntity> Animes { get; set; }
     public DbSet<ReviewEntity> Reviews { get; set; }
     public DbSet<HelpfulEntity> HelpfulMarks { get; set; }
+    public DbSet<FollowingEntity> FollowInstances { get; set; }
 
     protected override void OnModelCreating(ModelBuilder model)
     {
@@ -49,6 +50,23 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 .OnDelete(DeleteBehavior.Cascade);
             
             e.HasIndex(x => x.ReviewId);
+        });
+
+        model.Entity<FollowingEntity>(e =>
+        {
+            e.HasKey(x => new { x.FollowerUserId, x.FollowedUserId });
+
+            e.HasOne(x => x.FollowerUser)
+                .WithMany(x => x.Following)
+                .HasForeignKey(x => x.FollowerUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            e.HasOne(x => x.FollowedUser)
+                .WithMany(x => x.Followers)
+                .HasForeignKey(x => x.FollowedUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            e.HasIndex(x => x.FollowedUserId);
         });
     }
 }

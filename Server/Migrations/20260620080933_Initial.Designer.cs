@@ -12,7 +12,7 @@ using Server.Data;
 namespace Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260617085924_Initial")]
+    [Migration("20260620080933_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -82,6 +82,24 @@ namespace Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Animes");
+                });
+
+            modelBuilder.Entity("Server.Entities.FollowingEntity", b =>
+                {
+                    b.Property<Guid>("FollowerUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("FollowedUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("FollowerUserId", "FollowedUserId");
+
+                    b.HasIndex("FollowedUserId");
+
+                    b.ToTable("FollowInstances");
                 });
 
             modelBuilder.Entity("Server.Entities.HelpfulEntity", b =>
@@ -190,6 +208,25 @@ namespace Server.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Server.Entities.FollowingEntity", b =>
+                {
+                    b.HasOne("Server.Entities.UserEntity", "FollowedUser")
+                        .WithMany("Followers")
+                        .HasForeignKey("FollowedUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Entities.UserEntity", "FollowerUser")
+                        .WithMany("Following")
+                        .HasForeignKey("FollowerUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FollowedUser");
+
+                    b.Navigation("FollowerUser");
+                });
+
             modelBuilder.Entity("Server.Entities.HelpfulEntity", b =>
                 {
                     b.HasOne("Server.Entities.ReviewEntity", "Review")
@@ -251,6 +288,10 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Server.Entities.UserEntity", b =>
                 {
+                    b.Navigation("Followers");
+
+                    b.Navigation("Following");
+
                     b.Navigation("HelpfulReviews");
 
                     b.Navigation("Reviews");

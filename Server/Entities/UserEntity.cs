@@ -16,4 +16,7 @@ public class UserEntity
 
     public ICollection<ReviewEntity> Reviews { get; set; } = [];
     public ICollection<HelpfulEntity> HelpfulReviews { get; set; } = [];
+    
+    public ICollection<FollowingEntity> Following { get; set; } = [];
+    public ICollection<FollowingEntity> Followers { get; set; } = [];
 }

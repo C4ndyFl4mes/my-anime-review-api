@@ -76,6 +76,31 @@ namespace Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FollowInstances",
+                columns: table => new
+                {
+                    FollowerUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    FollowedUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FollowInstances", x => new { x.FollowerUserId, x.FollowedUserId });
+                    table.ForeignKey(
+                        name: "FK_FollowInstances_Users_FollowedUserId",
+                        column: x => x.FollowedUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FollowInstances_Users_FollowerUserId",
+                        column: x => x.FollowerUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Reviews",
                 columns: table => new
                 {
@@ -129,6 +154,11 @@ namespace Server.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_FollowInstances_FollowedUserId",
+                table: "FollowInstances",
+                column: "FollowedUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_HelpfulMarks_ReviewId",
                 table: "HelpfulMarks",
                 column: "ReviewId");
@@ -158,6 +188,9 @@ namespace Server.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "FollowInstances");
+
             migrationBuilder.DropTable(
                 name: "HelpfulMarks");
 
