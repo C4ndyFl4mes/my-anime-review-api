@@ -31,3 +31,8 @@ public record SignInResponse
     public string? AccessToken { get; set; } = null;
     public string? RefreshToken { get; set; } = null;
 }
+
+public record DeleteUserResponse
+{
+    public string Message { get; set; } = string.Empty;
+}
