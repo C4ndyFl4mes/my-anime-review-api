@@ -12,7 +12,7 @@ using Server.Data;
 namespace Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260620080933_Initial")]
+    [Migration("20260621090420_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -115,6 +115,69 @@ namespace Server.Migrations
                     b.HasIndex("ReviewId");
 
                     b.ToTable("HelpfulMarks");
+                });
+
+            modelBuilder.Entity("Server.Entities.ReportedBugEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Details")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("State")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ReportedBugs");
+                });
+
+            modelBuilder.Entity("Server.Entities.ReportedReviewEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ReportedReviewId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportedReviewId");
+
+                    b.ToTable("ReportedReviews");
+                });
+
+            modelBuilder.Entity("Server.Entities.ReportedUserEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ReportedUserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportedUserId");
+
+                    b.ToTable("ReportedUsers");
                 });
 
             modelBuilder.Entity("Server.Entities.ReviewEntity", b =>
@@ -246,6 +309,28 @@ namespace Server.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Server.Entities.ReportedReviewEntity", b =>
+                {
+                    b.HasOne("Server.Entities.ReviewEntity", "ReportedReview")
+                        .WithMany("Reports")
+                        .HasForeignKey("ReportedReviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ReportedReview");
+                });
+
+            modelBuilder.Entity("Server.Entities.ReportedUserEntity", b =>
+                {
+                    b.HasOne("Server.Entities.UserEntity", "ReportedUser")
+                        .WithMany("Reports")
+                        .HasForeignKey("ReportedUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ReportedUser");
+                });
+
             modelBuilder.Entity("Server.Entities.ReviewEntity", b =>
                 {
                     b.HasOne("Server.Entities.AnimeEntity", "Anime")
@@ -284,6 +369,8 @@ namespace Server.Migrations
             modelBuilder.Entity("Server.Entities.ReviewEntity", b =>
                 {
                     b.Navigation("HelpfulByUsers");
+
+                    b.Navigation("Reports");
                 });
 
             modelBuilder.Entity("Server.Entities.UserEntity", b =>
@@ -293,6 +380,8 @@ namespace Server.Migrations
                     b.Navigation("Following");
 
                     b.Navigation("HelpfulReviews");
+
+                    b.Navigation("Reports");
 
                     b.Navigation("Reviews");
                 });

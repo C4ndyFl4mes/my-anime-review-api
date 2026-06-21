@@ -18,4 +18,6 @@ public class ReviewEntity
     public required UserEntity User { get; set; }
     
     public ICollection<HelpfulEntity> HelpfulByUsers { get; set; } = [];
+
+    public ICollection<ReportedReviewEntity> Reports { get; set; } = [];
 }

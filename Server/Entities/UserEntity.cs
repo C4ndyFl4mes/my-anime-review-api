@@ -19,4 +19,6 @@ public class UserEntity
     
     public ICollection<FollowingEntity> Following { get; set; } = [];
     public ICollection<FollowingEntity> Followers { get; set; } = [];
+    
+    public ICollection<ReportedUserEntity> Reports { get; set; } = [];
 }

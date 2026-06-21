@@ -11,6 +11,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<ReviewEntity> Reviews { get; set; }
     public DbSet<HelpfulEntity> HelpfulMarks { get; set; }
     public DbSet<FollowingEntity> FollowInstances { get; set; }
+    public DbSet<ReportedUserEntity> ReportedUsers { get; set; }
+    public DbSet<ReportedReviewEntity> ReportedReviews { get; set; }
+    public DbSet<ReportedBugEntity> ReportedBugs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder model)
     {
@@ -67,6 +70,22 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 .OnDelete(DeleteBehavior.Cascade);
             
             e.HasIndex(x => x.FollowedUserId);
+        });
+
+        model.Entity<ReportedUserEntity>(e =>
+        {
+            e.HasOne(x => x.ReportedUser)
+                .WithMany(x => x.Reports)
+                .HasForeignKey(x => x.ReportedUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        model.Entity<ReportedReviewEntity>(e =>
+        {
+            e.HasOne(x => x.ReportedReview)
+                .WithMany(x => x.Reports)
+                .HasForeignKey(x => x.ReportedReviewId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

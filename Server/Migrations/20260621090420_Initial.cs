@@ -40,6 +40,20 @@ namespace Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ReportedBugs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    State = table.Column<int>(type: "integer", nullable: false),
+                    Details = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReportedBugs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
                 {
@@ -101,6 +115,26 @@ namespace Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ReportedUsers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ReportedUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Reason = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReportedUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ReportedUsers_Users_ReportedUserId",
+                        column: x => x.ReportedUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Reviews",
                 columns: table => new
                 {
@@ -153,6 +187,25 @@ namespace Server.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ReportedReviews",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ReportedReviewId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReportedReviews", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ReportedReviews_Reviews_ReportedReviewId",
+                        column: x => x.ReportedReviewId,
+                        principalTable: "Reviews",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_FollowInstances_FollowedUserId",
                 table: "FollowInstances",
@@ -162,6 +215,16 @@ namespace Server.Migrations
                 name: "IX_HelpfulMarks_ReviewId",
                 table: "HelpfulMarks",
                 column: "ReviewId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReportedReviews_ReportedReviewId",
+                table: "ReportedReviews",
+                column: "ReportedReviewId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReportedUsers_ReportedUserId",
+                table: "ReportedUsers",
+                column: "ReportedUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_AnimeId_CreatedAt",
@@ -193,6 +256,15 @@ namespace Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "HelpfulMarks");
+
+            migrationBuilder.DropTable(
+                name: "ReportedBugs");
+
+            migrationBuilder.DropTable(
+                name: "ReportedReviews");
+
+            migrationBuilder.DropTable(
+                name: "ReportedUsers");
 
             migrationBuilder.DropTable(
                 name: "Reviews");
