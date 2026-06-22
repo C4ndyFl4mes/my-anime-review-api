@@ -27,7 +27,7 @@ public class PostUserReportData(AppDbContext ctx)
 
         return new()
         {
-            Message = "Successfully reported a user."
+            Message = "You've successfully reported a user."
         };
     }
 }
