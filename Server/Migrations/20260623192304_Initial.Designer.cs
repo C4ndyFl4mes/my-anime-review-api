@@ -12,7 +12,7 @@ using Server.Data;
 namespace Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260623080132_Initial")]
+    [Migration("20260623192304_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -110,6 +110,9 @@ namespace Server.Migrations
 
                     b.Property<Guid>("ReviewId")
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("UserId", "ReviewId");
 
@@ -239,6 +242,9 @@ namespace Server.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .IsRequired()

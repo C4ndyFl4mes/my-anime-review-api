@@ -108,6 +108,9 @@ namespace Server.Migrations
                     b.Property<Guid>("ReviewId")
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("UserId", "ReviewId");
 
                     b.HasIndex("ReviewId");
@@ -236,6 +239,9 @@ namespace Server.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .IsRequired()

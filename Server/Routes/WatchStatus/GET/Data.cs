@@ -28,7 +28,7 @@ public class GetWatchStatusAnimeData(AppDbContext ctx)
                     Genres = DeserializeAnimeMetaData(w.Anime.MetaDataJSON!).Genres ?? new List<MalObject>()
                 },
                 EpisodesWatched = w.EpisodesWatched,
-                Status = w.Status
+                Status = w.Status.ToString()
             })
             .ToListAsync(ct);
 

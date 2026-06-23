@@ -36,6 +36,8 @@ public class GetAnimeReviewsData(AppDbContext ctx)
                 Score = r.Score,
                 Username = r.User.Username,
                 ProfileImageURL = r.User.ProfileImageURL,
+                CreatedAt = r.CreatedAt,
+                UpdatedAt = r.UpdatedAt,
                 HelpfulCount = r.HelpfulByUsers.Count,
                 IsHelpfulByCurrentUser = currentUserId != Guid.Empty && r.HelpfulByUsers.Any(h => h.UserId == currentUserId)
             })

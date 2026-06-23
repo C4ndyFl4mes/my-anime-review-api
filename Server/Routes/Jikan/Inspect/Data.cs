@@ -98,6 +98,8 @@ public class JikanInspectData(AppDbContext ctx)
                     Score = r.Score,
                     Username = r.User.Username,
                     ProfileImageURL = r.User.ProfileImageURL,
+                    CreatedAt = r.CreatedAt,
+                    UpdatedAt = r.UpdatedAt,
                     HelpfulCount = r.HelpfulByUsers.Count,
                     IsHelpfulByCurrentUser = r.HelpfulByUsers.Any(h => h.UserId == currentUserId)
                 })
@@ -111,6 +113,8 @@ public class JikanInspectData(AppDbContext ctx)
                 Score = currentUserReview.Score,
                 Username = currentUserReview.User.Username,
                 ProfileImageURL = currentUserReview.User.ProfileImageURL,
+                CreatedAt = currentUserReview.CreatedAt,
+                UpdatedAt = currentUserReview.UpdatedAt,
                 HelpfulCount = currentUserReview.HelpfulByUsers.Count,
                 IsHelpfulByCurrentUser = currentUserReview.HelpfulByUsers.Any(h => h.UserId == currentUserId)
             } : null;

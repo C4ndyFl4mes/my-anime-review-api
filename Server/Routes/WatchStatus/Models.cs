@@ -22,5 +22,5 @@ public record AnimeSearchItemExtended
 {
     public required AnimeSearchItem Item { get; set; }
     public int EpisodesWatched { get; set; }
-    public Enums.WatchStatus Status { get; set; }
+    public string Status { get; set; } = string.Empty;
 }

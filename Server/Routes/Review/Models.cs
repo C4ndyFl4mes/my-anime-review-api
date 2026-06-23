@@ -44,6 +44,8 @@ public record Review
     public int Score { get; set; }
     public string Username { get; set; } = string.Empty;
     public string ProfileImageURL { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
     public int HelpfulCount { get; set; }
     public bool IsHelpfulByCurrentUser { get; set; }
 }
