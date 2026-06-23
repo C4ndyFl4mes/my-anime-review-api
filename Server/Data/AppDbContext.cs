@@ -14,6 +14,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<ReportedUserEntity> ReportedUsers { get; set; }
     public DbSet<ReportedReviewEntity> ReportedReviews { get; set; }
     public DbSet<ReportedBugEntity> ReportedBugs { get; set; }
+    public DbSet<WatchStatusEntity> WatchStatuses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder model)
     {
@@ -86,6 +87,23 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 .WithMany(x => x.Reports)
                 .HasForeignKey(x => x.ReportedReviewId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        model.Entity<WatchStatusEntity>(e =>
+        {
+            e.HasKey(x => new { x.UserId, x.AnimeId });
+
+            e.HasOne(x => x.User)
+                .WithMany(x => x.WatchStatuses)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            e.HasOne(x => x.Anime)
+                .WithMany(x => x.WatchStatuses)
+                .HasForeignKey(x => x.AnimeId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            e.HasIndex(x => x.UserId);
         });
     }
 }

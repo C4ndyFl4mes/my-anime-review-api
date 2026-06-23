@@ -17,6 +17,7 @@ public class GetAnimeReviewsData(AppDbContext ctx)
 
         IQueryable<ReviewEntity> baseQuery = ctx.Reviews
             .AsNoTracking()
+            .Include(r => r.User)
             .Where(r => r.AnimeId == malId)
             .OrderByDescending(r => r.CreatedAt);
         
@@ -30,6 +31,7 @@ public class GetAnimeReviewsData(AppDbContext ctx)
             .Select(r => new Review
             {
                 Id = r.Id,
+                UserId = r.User.Id,
                 Text = r.Text,
                 Score = r.Score,
                 Username = r.User.Username,

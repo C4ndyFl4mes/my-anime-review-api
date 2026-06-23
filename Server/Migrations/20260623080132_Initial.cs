@@ -31,7 +31,7 @@ namespace Server.Migrations
                     Year = table.Column<int>(type: "integer", nullable: true),
                     Source = table.Column<string>(type: "text", nullable: true),
                     Type = table.Column<int>(type: "integer", nullable: true),
-                    MetaDataJSON = table.Column<string>(type: "text", nullable: true),
+                    MetaDataJSON = table.Column<string>(type: "text", nullable: false),
                     LastSynced = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -164,6 +164,33 @@ namespace Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "WatchStatuses",
+                columns: table => new
+                {
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AnimeId = table.Column<int>(type: "integer", nullable: false),
+                    EpisodesWatched = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WatchStatuses", x => new { x.UserId, x.AnimeId });
+                    table.ForeignKey(
+                        name: "FK_WatchStatuses_Animes_AnimeId",
+                        column: x => x.AnimeId,
+                        principalTable: "Animes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_WatchStatuses_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "HelpfulMarks",
                 columns: table => new
                 {
@@ -246,6 +273,16 @@ namespace Server.Migrations
                 name: "IX_Users_RoleId",
                 table: "Users",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WatchStatuses_AnimeId",
+                table: "WatchStatuses",
+                column: "AnimeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WatchStatuses_UserId",
+                table: "WatchStatuses",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -265,6 +302,9 @@ namespace Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "ReportedUsers");
+
+            migrationBuilder.DropTable(
+                name: "WatchStatuses");
 
             migrationBuilder.DropTable(
                 name: "Reviews");

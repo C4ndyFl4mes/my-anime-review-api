@@ -30,13 +30,27 @@ public record ReviewResponse
     public List<Review> Reviews { get; set; } = [];
 }
 
+public record ReviewExtendedResponse
+{
+    public Pagination Pagination { get; set; } = new();
+    public List<ReviewExtended> Reviews { get; set; } = [];
+}
+
 public record Review
 {
     public Guid Id { get; set; }
+    public required Guid UserId { get; set; }
     public string Text { get; set; } = string.Empty;
     public int Score { get; set; }
     public string Username { get; set; } = string.Empty;
     public string ProfileImageURL { get; set; } = string.Empty;
     public int HelpfulCount { get; set; }
     public bool IsHelpfulByCurrentUser { get; set; }
+}
+
+public record ReviewExtended
+{
+    public required Review Review { get; set; }
+    public int AnimeId { get; set; }
+    public string Title { get; set; } = string.Empty;
 }

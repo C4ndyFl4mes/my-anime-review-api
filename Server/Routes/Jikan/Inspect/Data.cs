@@ -93,6 +93,7 @@ public class JikanInspectData(AppDbContext ctx)
                 .Select(r => new Review.Review
                 {
                     Id = r.Id,
+                    UserId = r.User.Id,
                     Text = r.Text,
                     Score = r.Score,
                     Username = r.User.Username,
@@ -105,6 +106,7 @@ public class JikanInspectData(AppDbContext ctx)
             inspectedAnime.CurrentUserReview = currentUserReview is not null ? new Review.Review
             {
                 Id = currentUserReview.Id,
+                UserId = currentUserReview.User.Id,
                 Text = currentUserReview.Text,
                 Score = currentUserReview.Score,
                 Username = currentUserReview.User.Username,
@@ -146,7 +148,7 @@ public class JikanInspectData(AppDbContext ctx)
             existingAnime.Season = anime.Season;
             existingAnime.Year = anime.Year;
             existingAnime.Source = anime.Source;
-            existingAnime.MetaDataJSON = string.IsNullOrWhiteSpace(anime.MetaData?.ToString()) ? null : JsonSerializer.Serialize(anime.MetaData, JsonOptions);
+            existingAnime.MetaDataJSON = string.IsNullOrWhiteSpace(anime.MetaData?.ToString()) ? "" : JsonSerializer.Serialize(anime.MetaData, JsonOptions);
             existingAnime.LastSynced = DateTime.UtcNow;
 
             ctx.Animes.Update(existingAnime);
@@ -169,7 +171,7 @@ public class JikanInspectData(AppDbContext ctx)
                 Season = anime.Season,
                 Year = anime.Year,
                 Source = anime.Source,
-                MetaDataJSON = string.IsNullOrWhiteSpace(anime.MetaData?.ToString()) ? null : JsonSerializer.Serialize(anime.MetaData, JsonOptions),
+                MetaDataJSON = string.IsNullOrWhiteSpace(anime.MetaData?.ToString()) ? "" : JsonSerializer.Serialize(anime.MetaData, JsonOptions),
                 LastSynced = DateTime.UtcNow
             }, ct);
         }
