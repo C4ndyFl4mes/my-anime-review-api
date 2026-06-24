@@ -21,7 +21,7 @@ public class DeleteUserData(AppDbContext ctx)
 
         return new()
         {
-            Message = "Successfully deleted the user."
+            Message = "The user has been removed."
         };
     }
 }

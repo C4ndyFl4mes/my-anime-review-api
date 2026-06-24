@@ -38,7 +38,7 @@ public class PostReviewData(AppDbContext ctx)
 
         return new()
         {
-            Message = "Review successfully posted."
+            Message = "The review has been posted."
         };
     }
 }

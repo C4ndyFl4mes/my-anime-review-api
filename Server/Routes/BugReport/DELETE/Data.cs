@@ -18,7 +18,7 @@ public class DeleteBugReportData(AppDbContext ctx)
 
         return new()
         {
-            Message = "You've successfully deleted a bug report."
+            Message = "The bug report has been removed."
         };
     }
 }

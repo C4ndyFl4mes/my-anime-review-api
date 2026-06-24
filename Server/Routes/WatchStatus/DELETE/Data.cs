@@ -18,7 +18,7 @@ public class DeleteWatchStatusData(AppDbContext ctx)
 
         return new()
         {
-            Message = "You've successfully deleted the anime from your list."  
+            Message = "The anime has been removed from your list."  
         };
     }
 }

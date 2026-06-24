@@ -26,7 +26,7 @@ public class PutWatchStatusData(AppDbContext ctx)
 
         return new()
         {
-            Message = "You've successfully updated the watch status of an anime."
+            Message = "The watch status has been updated for this anime."
         };
     }
 }

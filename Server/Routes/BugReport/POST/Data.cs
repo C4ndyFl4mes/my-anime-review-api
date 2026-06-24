@@ -22,7 +22,7 @@ public class PostBugReportData(AppDbContext ctx)
 
         return new()
         {
-            Message = "You've successfully reported a bug."
+            Message = "The bug has been reported."
         };
     }
 }

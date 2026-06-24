@@ -18,7 +18,7 @@ public class DeleteReviewReportData(AppDbContext ctx)
 
         return new()
         {
-            Message = "You've successfully deleted a review report."  
+            Message = "The review report has been removed."  
         };
     }
 }

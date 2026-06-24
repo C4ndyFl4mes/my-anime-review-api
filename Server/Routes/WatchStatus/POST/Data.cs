@@ -33,7 +33,7 @@ public class PostWatchStatusData(AppDbContext ctx)
 
         return new()
         {
-            Message = "You've successfully added the anime to your list."  
+            Message = "The anime has been added to your list."  
         };
     }
 }

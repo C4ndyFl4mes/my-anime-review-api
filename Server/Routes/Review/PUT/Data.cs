@@ -26,7 +26,7 @@ public class UpdateReviewData(AppDbContext ctx)
 
         return new()
         {
-            Message = "Review successfully updated."
+            Message = "The review has been updated."
         };
     }
 }

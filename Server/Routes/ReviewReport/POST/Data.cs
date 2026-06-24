@@ -26,7 +26,7 @@ public class PostReviewReportData(AppDbContext ctx)
 
         return new()
         {
-            Message = "You've successfully reported a review."
+            Message = "The review has been reported."
         };
     }
 }

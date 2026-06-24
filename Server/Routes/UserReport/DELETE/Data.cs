@@ -18,7 +18,7 @@ public class DeleteUserReportData(AppDbContext ctx)
 
         return new()
         {
-            Message = "You've successfully deleted a user report."
+            Message = "The user report has been removed."
         };
     }
 }

@@ -20,14 +20,14 @@ public class ChangeProfileImageData(AppDbContext ctx)
             return new()
             {
                 ProfileImageURL = user.ProfileImageURL,
-                Message = "You've successfully changed profile image."
+                Message = "The profile image has been updated."
             };
         }
 
         return new()
         {
             ProfileImageURL = request.ProfileImageURL,
-            Message = "The profile image didn't change."
+            Message = "The profile image remains the same."
         };
     }
 }
