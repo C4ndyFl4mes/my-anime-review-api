@@ -44,8 +44,8 @@ public class SignUpData(AppDbContext ctx, TokenService tokenService)
         {
             AccessToken = tokenService.GetAccessToken(user, request.Password),
             RefreshToken = await tokenService.GenerateAndSaveRefreshTokenAsync(user),
-            Username = user.Username,
-            ProfileImageURL = user.ProfileImageURL
+            IsAuthenticated = true,
+            IsAdmin = role.Name == "Admin"
         };
     }
 }

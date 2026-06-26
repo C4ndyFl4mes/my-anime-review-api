@@ -26,8 +26,8 @@ public record SignInDto
 /// </summary>
 public record SignInResponse
 {
-    public string Username { get; set; } = string.Empty;
-    public string ProfileImageURL { get; set; } = string.Empty;
+    public bool IsAuthenticated { get; set; } = true;
+    public bool IsAdmin { get; set; } = false;
     public string? AccessToken { get; set; } = null;
     public string? RefreshToken { get; set; } = null;
 }

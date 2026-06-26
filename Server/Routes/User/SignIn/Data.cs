@@ -20,8 +20,8 @@ public class SignInData(AppDbContext ctx, TokenService tokenService)
         {
             AccessToken = tokenService.GetAccessToken(user, request.Password),
             RefreshToken = await tokenService.GenerateAndSaveRefreshTokenAsync(user),
-            Username = user.Username,
-            ProfileImageURL = user.ProfileImageURL
+            IsAuthenticated = user.Id != Guid.Empty,
+            IsAdmin = user.Role.Name == "Admin"
         };
     }
 

@@ -40,8 +40,8 @@ public class SignUpEndpoint(AppDbContext ctx, TokenService tokenService) : Endpo
 
         SignInResponse responseWithoutToken = new()
         {
-            Username = responseWithToken.Username,
-            ProfileImageURL = responseWithToken.ProfileImageURL
+            IsAuthenticated = responseWithToken.IsAuthenticated,
+            IsAdmin = responseWithToken.IsAdmin
         };
 
         return responseWithoutToken;
