@@ -51,7 +51,7 @@ public class RefreshEndpoint(AppDbContext ctx, TokenService tokenService) : Endp
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
                 Expires = DateTime.UtcNow.AddMinutes(8)
             });
 
@@ -59,7 +59,7 @@ public class RefreshEndpoint(AppDbContext ctx, TokenService tokenService) : Endp
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
                 Expires = DateTime.UtcNow.AddDays(7)
             });
 
@@ -72,7 +72,7 @@ public class RefreshEndpoint(AppDbContext ctx, TokenService tokenService) : Endp
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
                 Expires = DateTime.UtcNow.AddDays(-1)
             });
 
@@ -80,7 +80,7 @@ public class RefreshEndpoint(AppDbContext ctx, TokenService tokenService) : Endp
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
                 Expires = DateTime.UtcNow.AddDays(-1)
             });
 

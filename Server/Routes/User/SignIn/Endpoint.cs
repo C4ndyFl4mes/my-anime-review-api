@@ -24,7 +24,7 @@ public class SignInEndpoint(AppDbContext ctx, TokenService tokenService) : Endpo
         {
             HttpOnly = true,
             Secure = true,
-            SameSite = SameSiteMode.Strict,
+            SameSite = SameSiteMode.None,
             Expires = DateTime.UtcNow.AddMinutes(8)
         });
 
@@ -32,7 +32,7 @@ public class SignInEndpoint(AppDbContext ctx, TokenService tokenService) : Endpo
         {
             HttpOnly = true,
             Secure = true,
-            SameSite = SameSiteMode.Strict,
+            SameSite = SameSiteMode.None,
             Expires = DateTime.UtcNow.AddDays(7)
         });
 
