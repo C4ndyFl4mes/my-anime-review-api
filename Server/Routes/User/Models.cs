@@ -37,7 +37,8 @@ public record DeleteUserResponse
     public string Message { get; set; } = string.Empty;
 }
 
-public record IsAdminResponse
+public record UserAuthenticationStatus
 {
+    public bool IsUserAuthenticated { get; set; }
     public bool IsAdmin { get; set; } = false;
 }
