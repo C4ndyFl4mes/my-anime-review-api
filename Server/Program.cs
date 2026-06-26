@@ -87,6 +87,20 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddFastEndpoints().SwaggerDocument();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontendDev", policy =>
+    {
+        policy.WithOrigins(
+                "http://localhost:5173",
+                "https://localhost:5173"
+              )
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 WebApplication app = builder.Build();
 
 // Seed the database with initial data if necessary.
@@ -136,6 +150,8 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<GlobalExceptionHandler>();
 
 app.UseHttpsRedirection();
+
+app.UseCors("FrontendDev");
 
 app.UseAuthentication();
 app.UseAuthorization();
