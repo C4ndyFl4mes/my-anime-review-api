@@ -26,7 +26,7 @@ public record SignInDto
 /// </summary>
 public record SignInResponse
 {
-    public bool IsAuthenticated { get; set; } = true;
+    public Guid UserId { get; set; }
     public bool IsAdmin { get; set; } = false;
     public string? AccessToken { get; set; } = null;
     public string? RefreshToken { get; set; } = null;
@@ -41,4 +41,10 @@ public record UserAuthenticationStatus
 {
     public bool IsAdmin { get; set; } = false;
     public Guid UserId { get; set; }
+}
+
+public record RefreshResponse
+{
+    public Guid UserId { get; set; }
+    public string Message { get; set; } = string.Empty;
 }

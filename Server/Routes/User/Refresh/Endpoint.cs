@@ -12,7 +12,7 @@ namespace Server.Routes.User.Refresh;
 /// It validates the provided access and refresh tokens, generates new tokens if valid, and sets them as HTTP-only cookies in the response.
 /// If the refresh token is invalid or expired, it clears the cookies and returns an unauthorized response, prompting the user to sign in again.
 /// </summary>
-public class RefreshEndpoint(AppDbContext ctx, TokenService tokenService) : EndpointWithoutRequest<string>
+public class RefreshEndpoint(AppDbContext ctx, TokenService tokenService) : EndpointWithoutRequest<RefreshResponse>
 {
     public override void Configure()
     {
@@ -20,7 +20,7 @@ public class RefreshEndpoint(AppDbContext ctx, TokenService tokenService) : Endp
         AllowAnonymous();
     }
 
-    public override async Task<string> ExecuteAsync(CancellationToken ct)
+    public override async Task<RefreshResponse> ExecuteAsync(CancellationToken ct)
     {
         if (!HttpContext.Request.Cookies.TryGetValue("accessToken", out string? accessToken))
             throw new UnauthorizedException("No access token provided.");
@@ -45,7 +45,7 @@ public class RefreshEndpoint(AppDbContext ctx, TokenService tokenService) : Endp
         try
         {
             RefreshData data = new(ctx, tokenService);
-            (string newAccessToken, string newRefreshToken) = await data.RefreshTokensAsync(userId, refreshToken ?? string.Empty);
+            (string newAccessToken, string newRefreshToken, Guid UserId) = await data.RefreshTokensAsync(userId, refreshToken ?? string.Empty);
 
             HttpContext.Response.Cookies.Append("accessToken", newAccessToken, new CookieOptions
             {
@@ -63,7 +63,11 @@ public class RefreshEndpoint(AppDbContext ctx, TokenService tokenService) : Endp
                 Expires = DateTime.UtcNow.AddDays(7)
             });
 
-            return "Tokens refreshed successfully.";
+            return new()
+            {
+                UserId = UserId,
+                Message = "Token refreshed successfully."
+            };
         }
         catch (UnauthorizedException)
         {

@@ -40,7 +40,7 @@ public class SignUpEndpoint(AppDbContext ctx, TokenService tokenService) : Endpo
 
         SignInResponse responseWithoutToken = new()
         {
-            IsAuthenticated = responseWithToken.IsAuthenticated,
+            UserId = responseWithToken.UserId,
             IsAdmin = responseWithToken.IsAdmin
         };
 
