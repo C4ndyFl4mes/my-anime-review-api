@@ -7,7 +7,7 @@ public class CheckUserAuthenticationEndpoint : EndpointWithoutRequest<UserAuthen
 {
     public override void Configure()
     {
-        Post("/user/is-authenticated");
+        Get("/user/is-authenticated");
         AllowAnonymous();
     }
 
