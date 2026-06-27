@@ -15,7 +15,7 @@ public class CheckUserAuthenticationEndpoint : EndpointWithoutRequest<UserAuthen
     {
         return new UserAuthenticationStatus
         {
-            IsUserAuthenticated = UserUtils.GetAuthenticatedUserID() != Guid.Empty,
+            UserId = UserUtils.GetAuthenticatedUserID(),
             IsAdmin = "Admin" == UserUtils.GetAuthenticatedUserRole()
         };
     }

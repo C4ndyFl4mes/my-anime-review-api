@@ -39,6 +39,6 @@ public record DeleteUserResponse
 
 public record UserAuthenticationStatus
 {
-    public bool IsUserAuthenticated { get; set; }
     public bool IsAdmin { get; set; } = false;
+    public Guid UserId { get; set; }
 }
