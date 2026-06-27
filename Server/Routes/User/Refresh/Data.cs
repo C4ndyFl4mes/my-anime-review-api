@@ -13,7 +13,7 @@ namespace Server.Routes.User.Refresh;
 /// </summary>
 public class RefreshData(AppDbContext ctx, TokenService tokenService)
 {
-    public async Task<(string AccessToken, string RefreshToken, Guid UserId)> RefreshTokensAsync(Guid userId, string refreshToken)
+    public async Task<(string AccessToken, string RefreshToken, Guid UserId, bool IsAdmin)> RefreshTokensAsync(Guid userId, string refreshToken)
     {
         UserEntity user = await ValidateRefreshTokenAsync(userId, refreshToken, CancellationToken.None) ??
             throw new UnauthorizedException("Invalid refresh token.");
@@ -21,7 +21,8 @@ public class RefreshData(AppDbContext ctx, TokenService tokenService)
         return (
             AccessToken: tokenService.CreateToken(user),
             RefreshToken: await tokenService.GenerateAndSaveRefreshTokenAsync(user),
-            UserId: user.Id
+            UserId: user.Id,
+            IsAdmin: user.Role.Name == "Admin"
         );
     }
 

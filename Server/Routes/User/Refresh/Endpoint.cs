@@ -45,7 +45,7 @@ public class RefreshEndpoint(AppDbContext ctx, TokenService tokenService) : Endp
         try
         {
             RefreshData data = new(ctx, tokenService);
-            (string newAccessToken, string newRefreshToken, Guid UserId) = await data.RefreshTokensAsync(userId, refreshToken ?? string.Empty);
+            (string newAccessToken, string newRefreshToken, Guid UserId, bool IsAdmin) = await data.RefreshTokensAsync(userId, refreshToken ?? string.Empty);
 
             HttpContext.Response.Cookies.Append("accessToken", newAccessToken, new CookieOptions
             {
@@ -66,6 +66,7 @@ public class RefreshEndpoint(AppDbContext ctx, TokenService tokenService) : Endp
             return new()
             {
                 UserId = UserId,
+                IsAdmin = IsAdmin,
                 Message = "Token refreshed successfully."
             };
         }
