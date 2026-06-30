@@ -83,6 +83,8 @@ public class JikanInspectData(AppDbContext ctx)
             .Include(r => r.HelpfulByUsers)
             .ToListAsync(ct);
 
+            double? averageScore = reviews.Count > 0 ? reviews.Average(r => r.Score) : null;
+            inspectedAnime.Score = averageScore;
             
             ReviewEntity? currentUserReview = reviews.FirstOrDefault(r => r.UserId == currentUserId);
             inspectedAnime.TotalReviews = reviews.Count;

@@ -187,6 +187,8 @@ public record Anime
     public int TotalReviews { get; set; }
     public Review.Review? CurrentUserReview { get; set; }
     public bool CanCurrentUserMakeReview { get; set; }
+    [JsonConverter(typeof(TwoDecimalNullableDoubleConverter))]
+    public double? Score { get; set; }
 }
 
 public record AnimeSearchItem
