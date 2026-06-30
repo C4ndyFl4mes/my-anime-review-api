@@ -41,6 +41,7 @@ public static class JikanMapping
         AgeRating = d.Rating,
         Type = d.Type,
         CurrentUserWatchStatus = d.CurrentUserWatchStatus,
+        Score = d.Score,
         Genres = d.Genres ?? []
     };
 }

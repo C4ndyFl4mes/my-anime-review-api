@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using Server.Enums;
 using Server.Routes.Review;
+using Server.Utils;
 
 namespace Server.Routes.Jikan;
 
@@ -91,6 +92,8 @@ public record JikanAnimeData
     [JsonPropertyName("demographics")]
     public List<MalObject>? Demographics { get; set; }
     public string? CurrentUserWatchStatus { get; set; }
+    [JsonConverter(typeof(TwoDecimalNullableDoubleConverter))]
+    public double? Score { get; set; }
 }
 
 public record JikanTitle
@@ -194,6 +197,8 @@ public record AnimeSearchItem
     public AgeRating? AgeRating { get; set; }
     public AnimeType? Type { get; set; }
     public string? CurrentUserWatchStatus { get; set; }
+    [JsonConverter(typeof(TwoDecimalNullableDoubleConverter))]
+    public double? Score { get; set; }
     public List<MalObject> Genres { get; set; } = [];
 }
 

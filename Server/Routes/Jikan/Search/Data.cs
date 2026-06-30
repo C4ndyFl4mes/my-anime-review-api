@@ -66,23 +66,39 @@ public class JikanSearchData(AppDbContext ctx)
             JikanAnimeResponse payload = JsonSerializer.Deserialize<JikanAnimeResponse>(responseContent, JsonOptions) ??
                 throw new JikanApiException("Jikan returned an empty response.");
 
+            HashSet<int> pageAnimeIds = payload.Data.Select(a => a.MalId).Distinct().ToHashSet();
+
             Dictionary<int, string> watchStatusByAnimeId = [];
-            if (currentUserId != Guid.Empty)
+            if (currentUserId != Guid.Empty && pageAnimeIds.Count > 0)
             {
-                HashSet<int> pageAnimeIds = payload.Data.Select(a => a.MalId).Distinct().ToHashSet();
-                if (pageAnimeIds.Count > 0)
-                {
-                    watchStatusByAnimeId = await ctx.WatchStatuses
-                        .AsNoTracking()
-                        .Where(w => w.UserId == currentUserId && pageAnimeIds.Contains(w.AnimeId))
-                        .Select(w => new { w.AnimeId, Status = w.Status.ToString() })
-                        .ToDictionaryAsync(w => w.AnimeId, w => w.Status, ct);
-                }
+                watchStatusByAnimeId = await ctx.WatchStatuses
+                    .AsNoTracking()
+                    .Where(w => w.UserId == currentUserId && pageAnimeIds.Contains(w.AnimeId))
+                    .Select(w => new { w.AnimeId, Status = w.Status.ToString() })
+                    .ToDictionaryAsync(w => w.AnimeId, w => w.Status, ct);
+            }
+
+            Dictionary<int, double> averageScoreByAnimeId = [];
+            if (pageAnimeIds.Count > 0)
+            {
+                averageScoreByAnimeId = await ctx.Reviews
+                    .AsNoTracking()
+                    .Where(r => pageAnimeIds.Contains(r.AnimeId))
+                    .GroupBy(r => r.AnimeId)
+                    .Select(g => new
+                    {
+                        AnimeId = g.Key,
+                        AverageScore = Math.Round(g.Average(r => r.Score), 2, MidpointRounding.AwayFromZero)
+                    })
+                    .ToDictionaryAsync(x => x.AnimeId, x => x.AverageScore, ct);
             }
             
             payload.Data.ForEach(a =>
             {
                 a.CurrentUserWatchStatus = watchStatusByAnimeId.GetValueOrDefault(a.MalId);
+                a.Score = averageScoreByAnimeId.TryGetValue(a.MalId, out double averageScore)
+                    ? averageScore
+                    : null;
             });
 
             return new JikanSearchResponse
