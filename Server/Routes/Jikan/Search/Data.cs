@@ -25,29 +25,6 @@ public class JikanSearchData(AppDbContext ctx)
     /// <exception cref="JikanApiException">Thrown when the Jikan API request fails or returns an error.</exception>
     public async Task<JikanSearchResponse> SearchAnimeAsync(string? query, int page, Guid currentUserId, CancellationToken ct)
     {
-        List<AnimeSearchItemExtended> userWatchStatuses = [];
-        if (currentUserId != Guid.Empty)
-        {
-            userWatchStatuses = await ctx.WatchStatuses
-                .AsNoTracking()
-                .Where(w => w.UserId == currentUserId && (string.IsNullOrWhiteSpace(query) || w.Anime.Title.Contains(query)))
-                .Select(w => new AnimeSearchItemExtended
-                {
-                    Item = new()
-                    {
-                        MalId = w.AnimeId,
-                        Title = w.Anime.Title,
-                        ImageUrl = w.Anime.ImageUrl,
-                        AgeRating = w.Anime.AgeRating,
-                        Type = w.Anime.Type,
-                        Genres = DeserializeAnimeMetaData(w.Anime.MetaDataJSON!).Genres ?? new List<MalObject>()
-                    },
-                    EpisodesWatched = w.EpisodesWatched,
-                    Status = w.Status.ToString()
-                })
-                .ToListAsync(ct);
-        }
-
         HttpResponseMessage response;
         try
         {
@@ -88,17 +65,24 @@ public class JikanSearchData(AppDbContext ctx)
         {
             JikanAnimeResponse payload = JsonSerializer.Deserialize<JikanAnimeResponse>(responseContent, JsonOptions) ??
                 throw new JikanApiException("Jikan returned an empty response.");
+
+            Dictionary<int, string> watchStatusByAnimeId = [];
+            if (currentUserId != Guid.Empty)
+            {
+                HashSet<int> pageAnimeIds = payload.Data.Select(a => a.MalId).Distinct().ToHashSet();
+                if (pageAnimeIds.Count > 0)
+                {
+                    watchStatusByAnimeId = await ctx.WatchStatuses
+                        .AsNoTracking()
+                        .Where(w => w.UserId == currentUserId && pageAnimeIds.Contains(w.AnimeId))
+                        .Select(w => new { w.AnimeId, Status = w.Status.ToString() })
+                        .ToDictionaryAsync(w => w.AnimeId, w => w.Status, ct);
+                }
+            }
             
             payload.Data.ForEach(a =>
             {
-                AnimeSearchItemExtended? watchStatus = userWatchStatuses.FirstOrDefault(w => w.Item.MalId == a.MalId);
-                if (watchStatus != null)
-                {
-                    a.CurrentUserWatchStatus = watchStatus.Status;
-                } else
-                {
-                    a.CurrentUserWatchStatus = null;
-                }
+                a.CurrentUserWatchStatus = watchStatusByAnimeId.GetValueOrDefault(a.MalId);
             });
 
             return new JikanSearchResponse
@@ -123,10 +107,5 @@ public class JikanSearchData(AppDbContext ctx)
         public string Error { get; set; } = string.Empty;
         [JsonPropertyName("report_url")]
         public string ReportUrl { get; set; } = string.Empty;
-    }
-
-    private static AnimeMetaData DeserializeAnimeMetaData(string AnimeMetaDataJson)
-    {
-        return System.Text.Json.JsonSerializer.Deserialize<AnimeMetaData>(AnimeMetaDataJson) ?? new AnimeMetaData();
     }
 }
