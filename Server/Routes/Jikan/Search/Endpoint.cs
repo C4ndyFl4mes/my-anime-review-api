@@ -1,4 +1,5 @@
 using FastEndpoints;
+using Microsoft.Extensions.Caching.Memory;
 using Server.Data;
 using Server.Utils;
 
@@ -7,7 +8,7 @@ namespace Server.Routes.Jikan.Search;
 /// <summary>
 /// Endpoint for searching anime using Jikan API. Supports optional query parameter 'q' for search term and 'page' for pagination.
 /// </summary>
-public class SearchEndpoint(AppDbContext ctx) : EndpointWithoutRequest<JikanSearchResponse>
+public class SearchEndpoint(AppDbContext ctx, IMemoryCache cache) : EndpointWithoutRequest<JikanSearchResponse>
 {
     public override void Configure()
     {
@@ -21,7 +22,7 @@ public class SearchEndpoint(AppDbContext ctx) : EndpointWithoutRequest<JikanSear
 
         Guid currentUserId = UserUtils.GetAuthenticatedUserID();
 
-        JikanSearchData data = new(ctx);
+        JikanSearchData data = new(ctx, cache);
         return await data.SearchAnimeAsync(q, page, currentUserId, ct);
     }
 }

@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Server.Data;
 using Server.Exceptions;
 using Server.Routes.WatchStatus;
@@ -10,7 +11,7 @@ namespace Server.Routes.Jikan.Search;
 /// <summary>
 /// Data class for searching anime using Jikan API. Supports optional query parameter 'q' for search term and 'page' for pagination.
 /// </summary>
-public class JikanSearchData(AppDbContext ctx)
+public class JikanSearchData(AppDbContext ctx, IMemoryCache cache)
 {
     private const int MaxPagesToScanForDeduplication = 20;
 
@@ -97,7 +98,7 @@ public class JikanSearchData(AppDbContext ctx)
                     })
                     .ToDictionaryAsync(x => x.AnimeId, x => x.AverageScore, ct);
             }
-            
+
             requestedPageData.ForEach(a =>
             {
                 a.CurrentUserWatchStatus = watchStatusByAnimeId.GetValueOrDefault(a.MalId);
@@ -133,6 +134,15 @@ public class JikanSearchData(AppDbContext ctx)
 
     private async Task<JikanAnimeResponse> FetchAnimePageAsync(string? query, int page, CancellationToken ct)
     {
+        string cacheKey = $"jikan:anime:{NormalizeQuery(query)}:page:{page}";
+
+        if (cache.TryGetValue(cacheKey, out string? cachedJson) && !string.IsNullOrWhiteSpace(cachedJson))
+        {
+            return JsonSerializer.Deserialize<JikanAnimeResponse>(cachedJson, JsonOptions) ??
+                throw new JikanApiException("Cached Jikan response was empty.");
+        }
+
+
         HttpResponseMessage response;
         try
         {
@@ -155,23 +165,24 @@ public class JikanSearchData(AppDbContext ctx)
         if (!response.IsSuccessStatusCode)
         {
             JikanErrorResponse? errorResponse = null;
-            try
-            {
-                errorResponse = JsonSerializer.Deserialize<JikanErrorResponse>(responseContent, JsonOptions);
-            }
-            catch (JsonException)
-            {
-                // Ignore JSON deserialization errors
-            }
+            try { errorResponse = JsonSerializer.Deserialize<JikanErrorResponse>(responseContent, JsonOptions); }
+            catch (JsonException) { }
 
-            string message = errorResponse?.Message ??
-                $"Jikan returned HTTP {(int)response.StatusCode} ({response.StatusCode}).";
+            string message = errorResponse?.Message ?? $"Jikan returned HTTP {(int)response.StatusCode} ({response.StatusCode}).";
             throw new JikanApiException(message);
         }
+
+        cache.Set(cacheKey, responseContent, new MemoryCacheEntryOptions {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(2),
+            SlidingExpiration = TimeSpan.FromSeconds(30)
+        });
 
         return JsonSerializer.Deserialize<JikanAnimeResponse>(responseContent, JsonOptions) ??
             throw new JikanApiException("Jikan returned an empty response.");
     }
+
+    private static string NormalizeQuery(string? query) =>
+       string.IsNullOrWhiteSpace(query) ? "_" : query.Trim().ToLowerInvariant();
 
     private record JikanErrorResponse
     {

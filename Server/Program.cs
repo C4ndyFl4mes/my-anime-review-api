@@ -101,6 +101,8 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddMemoryCache();
+
 WebApplication app = builder.Build();
 
 // Seed the database with initial data if necessary.
