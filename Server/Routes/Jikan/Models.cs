@@ -90,6 +90,7 @@ public record JikanAnimeData
 
     [JsonPropertyName("demographics")]
     public List<MalObject>? Demographics { get; set; }
+    public string? CurrentUserWatchStatus { get; set; }
 }
 
 public record JikanTitle
@@ -192,6 +193,7 @@ public record AnimeSearchItem
     public string? ImageUrl { get; set; }
     public AgeRating? AgeRating { get; set; }
     public AnimeType? Type { get; set; }
+    public string? CurrentUserWatchStatus { get; set; }
     public List<MalObject> Genres { get; set; } = [];
 }
 

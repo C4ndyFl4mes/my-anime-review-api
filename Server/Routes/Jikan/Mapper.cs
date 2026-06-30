@@ -40,6 +40,7 @@ public static class JikanMapping
         ImageUrl = d.Images?.Jpg?.ImageUrl ?? d.Images?.Jpg?.LargeImageUrl,
         AgeRating = d.Rating,
         Type = d.Type,
+        CurrentUserWatchStatus = d.CurrentUserWatchStatus,
         Genres = d.Genres ?? []
     };
 }
