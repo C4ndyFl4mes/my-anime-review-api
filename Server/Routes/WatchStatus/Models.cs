@@ -24,3 +24,9 @@ public record AnimeSearchItemExtended
     public int EpisodesWatched { get; set; }
     public string Status { get; set; } = string.Empty;
 }
+
+public record GetAnimeWatchStatusResponse
+{
+    public int EpisodesWatched { get; set; } = 0;
+    public string Status { get; set; } = string.Empty;
+}
