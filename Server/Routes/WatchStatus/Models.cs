@@ -28,5 +28,8 @@ public record AnimeSearchItemExtended
 public record GetAnimeWatchStatusResponse
 {
     public int EpisodesWatched { get; set; } = 0;
+    public int MaxEpisodes { get; set; } = 0;
     public string Status { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
+    public bool IsInWatchList { get; set; } = false;
 }
