@@ -11,14 +11,20 @@ public class PostWatchStatusData(AppDbContext ctx)
     public async Task<WatchStatusResponse> PostWatchStatusAsync(int animeId, Guid currentUserId, PostWatchStatusRequest request, CancellationToken ct)
     {
         IDbContextTransaction? transaction = await ctx.Database.BeginTransactionAsync(ct);
-
+        string addedMessage = "The anime has been added to your list.";
+        string updatedMessage = "The anime has been updated in your list.";
         AnimeEntity anime = await ctx.Animes.FirstOrDefaultAsync(a => a.Id == animeId, ct) ??
             throw new NotFoundException("The anime doesn't exist.");
 
         if (anime.TotalEpisodes is not null && request.EpisodesWatched > anime.TotalEpisodes)
             throw new BadRequestException("You can't watch more episodes than the anime has total episodes.");
+
+        WatchStatusEntity? existingStatus = await ctx.WatchStatuses.AsNoTracking().FirstOrDefaultAsync(w => w.UserId == currentUserId && w.AnimeId == animeId, ct);
         
-        ctx.WatchStatuses.RemoveRange(ctx.WatchStatuses.Where(w => w.UserId == currentUserId && w.AnimeId == animeId)); // Remove any existing watch status for the user and anime combination to avoid duplicates.
+        if (existingStatus is not null)
+        {
+            ctx.WatchStatuses.Remove(existingStatus); // Remove any existing watch status for the user and anime combination to avoid duplicates.
+        }
         
         WatchStatusEntity status = new()
         {
@@ -40,7 +46,7 @@ public class PostWatchStatusData(AppDbContext ctx)
 
         return new()
         {
-            Message = "The anime has been added to your list."  
+            Message = existingStatus is null ? addedMessage : updatedMessage
         };
     }
 }
