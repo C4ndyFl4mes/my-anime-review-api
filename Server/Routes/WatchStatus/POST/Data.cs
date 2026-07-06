@@ -18,7 +18,7 @@ public class PostWatchStatusData(AppDbContext ctx)
         if (anime.TotalEpisodes is not null && request.EpisodesWatched > anime.TotalEpisodes)
             throw new BadRequestException("You can't watch more episodes than the anime has total episodes.");
         
-        ctx.Remove(anime); // Removes the anime from the database to avoid duplicate entries, as it will be re-added with the new watch status.
+        ctx.WatchStatuses.RemoveRange(ctx.WatchStatuses.Where(w => w.UserId == currentUserId && w.AnimeId == animeId)); // Remove any existing watch status for the user and anime combination to avoid duplicates.
         
         WatchStatusEntity status = new()
         {
