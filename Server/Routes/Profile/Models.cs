@@ -9,7 +9,7 @@ public record GetProfileResponse
     public string JoinedDate { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
     public bool IsFollowedByCurrentUser { get; set; }
-    public Dictionary<string, int> UserStats { get; set; } = [];
+    public Dictionary<string, double> UserStats { get; set; } = [];
     public Dictionary<string, int> AnimeStats { get; set; } = [];
     public List<ReviewExtended> TopReviews { get; set; } = [];
 }

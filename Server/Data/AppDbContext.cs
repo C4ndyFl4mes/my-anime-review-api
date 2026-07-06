@@ -54,6 +54,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 .OnDelete(DeleteBehavior.Cascade);
             
             e.HasIndex(x => x.ReviewId);
+
+            e.HasIndex(x => x.UserId);
         });
 
         model.Entity<FollowingEntity>(e =>

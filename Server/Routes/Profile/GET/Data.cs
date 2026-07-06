@@ -28,13 +28,21 @@ public class GetProfileData(AppDbContext ctx)
         }
         animeStats.TryAdd("TotalEntries", animeStats.Values.Sum());
 
-        Dictionary<string, int> userStats = new()
+        int totalReviews = await ctx.Reviews.CountAsync(r => r.UserId == targetUserId, ct);
+        int totalHelpfulMarks = await ctx.HelpfulMarks.CountAsync(h => h.Review.UserId == targetUserId, ct);
+        int totalFollowers = await ctx.FollowInstances.CountAsync(fi => fi.FollowedUserId == targetUserId, ct);
+        int totalFollowing = await ctx.FollowInstances.CountAsync(fi => fi.FollowerUserId == targetUserId, ct);
+        double meanScore = totalReviews != 0
+            ? await ctx.Reviews.Where(r => r.UserId == targetUserId).AverageAsync(r => (double)r.Score, ct)
+            : 0d;
+
+        Dictionary<string, double> userStats = new()
         {
-            { "TotalReviews", user.Reviews.Count },
-            { "TotalHelpfulMarks", await ctx.HelpfulMarks.CountAsync(h => h.Review.UserId == targetUserId, ct) },
-            { "TotalFollowers", user.Followers.Count },
-            { "TotalFollowing", user.Following.Count },
-            { "MeanScore", user.Reviews.Count != 0 ? (int)user.Reviews.Average(r => r.Score) : 0 }
+            { "TotalReviews", totalReviews },
+            { "TotalHelpfulMarks", totalHelpfulMarks },
+            { "TotalFollowers", totalFollowers },
+            { "TotalFollowing", totalFollowing },
+            { "MeanScore", meanScore }
         };
 
         List<ReviewExtended> topReviews = await ctx.Reviews
