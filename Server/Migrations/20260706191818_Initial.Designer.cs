@@ -12,7 +12,7 @@ using Server.Data;
 namespace Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260623192304_Initial")]
+    [Migration("20260706191818_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -117,6 +117,8 @@ namespace Server.Migrations
                     b.HasKey("UserId", "ReviewId");
 
                     b.HasIndex("ReviewId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("HelpfulMarks");
                 });

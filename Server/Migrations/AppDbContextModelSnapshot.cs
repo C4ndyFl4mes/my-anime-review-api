@@ -115,6 +115,8 @@ namespace Server.Migrations
 
                     b.HasIndex("ReviewId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("HelpfulMarks");
                 });
 

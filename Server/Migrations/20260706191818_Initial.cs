@@ -246,6 +246,11 @@ namespace Server.Migrations
                 column: "ReviewId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_HelpfulMarks_UserId",
+                table: "HelpfulMarks",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ReportedReviews_ReportedReviewId",
                 table: "ReportedReviews",
                 column: "ReportedReviewId");
