@@ -2,11 +2,17 @@ using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.Exceptions;
 using Server.Routes.Jikan;
+using System.Text.Json;
 
 namespace Server.Routes.WatchStatus.GET;
 
 public class GetWatchStatusAnimeData(AppDbContext ctx)
 {
+    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
     public async Task<GetWatchStatusAnimeResponse> GetUserAnimeListAsync(Guid targetUserId, string status, CancellationToken ct)
     {
         if (!await ctx.Users.AnyAsync(u => u.Id == targetUserId, ct))
@@ -48,6 +54,6 @@ public class GetWatchStatusAnimeData(AppDbContext ctx)
 
     private static AnimeMetaData DeserializeAnimeMetaData(string AnimeMetaDataJson)
     {
-        return System.Text.Json.JsonSerializer.Deserialize<AnimeMetaData>(AnimeMetaDataJson) ?? new AnimeMetaData();
+        return JsonSerializer.Deserialize<AnimeMetaData>(AnimeMetaDataJson, JsonOptions) ?? new AnimeMetaData();
     }
 }
