@@ -7,15 +7,23 @@ namespace Server.Routes.WatchStatus.GET;
 
 public class GetWatchStatusAnimeData(AppDbContext ctx)
 {
-    public async Task<GetWatchStatusAnimeResponse> GetUserAnimeListAsync(Guid targetUserId, Enums.WatchStatus? status, CancellationToken ct)
+    public async Task<GetWatchStatusAnimeResponse> GetUserAnimeListAsync(Guid targetUserId, string status, CancellationToken ct)
     {
         if (!await ctx.Users.AnyAsync(u => u.Id == targetUserId, ct))
             throw new NotFoundException("The user doesn't exist.");
 
-        List<AnimeSearchItemExtended> animeItems = await ctx.WatchStatuses
+        IQueryable<Entities.WatchStatusEntity> query = ctx.WatchStatuses
             .AsNoTracking()
             .Include(w => w.Anime)
-            .Where(w => w.UserId == targetUserId && (status == null || w.Status == status))
+            .Where(w => w.UserId == targetUserId);
+
+        if (!status.Equals("All", StringComparison.OrdinalIgnoreCase))
+        {
+            Enums.WatchStatus parsedStatus = Enum.Parse<Enums.WatchStatus>(status, true);
+            query = query.Where(w => w.Status == parsedStatus);
+        }
+
+        List<AnimeSearchItemExtended> animeItems = await query
             .Select(w => new AnimeSearchItemExtended
             {
                 Item = new()

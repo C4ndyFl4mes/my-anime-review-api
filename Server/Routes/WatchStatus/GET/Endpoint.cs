@@ -15,12 +15,13 @@ public class GetWatchStatusAnimeEndpoint(AppDbContext ctx) : EndpointWithoutRequ
     public override async Task<GetWatchStatusAnimeResponse> ExecuteAsync(CancellationToken ct)
     {
         Guid targetUserId = Route<Guid>("userId", isRequired: true);
-        string? status = Route<string>("status", isRequired: false);
+        string status = Route<string>("status", isRequired: true) ?? "All";
 
-        if (!Enum.TryParse(status, true, out Enums.WatchStatus parsedStatus) && status is not null)
+        if (!status.Equals("All", StringComparison.OrdinalIgnoreCase)
+            && !Enum.TryParse(status, true, out Enums.WatchStatus _))
             throw new BadRequestException("Invalid status value. Allowed values are: Planned, Watching, Completed, OnHold, Dropped.");
         
         GetWatchStatusAnimeData data = new(ctx);
-        return await data.GetUserAnimeListAsync(targetUserId, status is not null ? parsedStatus : null, ct);
+        return await data.GetUserAnimeListAsync(targetUserId, status, ct);
     }
 }
