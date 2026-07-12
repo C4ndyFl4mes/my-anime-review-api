@@ -1,4 +1,4 @@
-using Server.Enums;
+﻿using Server.Enums;
 
 namespace Server.Entities;
 
@@ -20,7 +20,7 @@ public class AnimeEntity
     public AnimeType? Type { get; set; }
 
     public required string MetaDataJSON { get; set; } // Store any additional metadata as JSON string such as Broadcast, Genres, Studios, Producers, Licensors, Themes, and Demographics, can be deserialized into an object when used.
-    public DateTime LastSynced { get; set; } // Track when the anime data was last synced with Jikan API
+    public DateTime LastSynced { get; set; } // Track when the anime data was last synced with Tenrai API
 
     public ICollection<ReviewEntity> Reviews { get; set; } = [];
 

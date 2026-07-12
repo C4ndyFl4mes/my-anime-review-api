@@ -1,4 +1,4 @@
-using Server.Routes.Jikan;
+﻿using Server.Routes.Tenrai;
 
 namespace Server.Routes.WatchStatus;
 

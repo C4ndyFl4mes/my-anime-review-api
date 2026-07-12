@@ -1,7 +1,7 @@
-using Server.Data;
+﻿using Server.Data;
 using Server.Enums;
 using Microsoft.EntityFrameworkCore;
-using Server.Routes.Jikan;
+using Server.Routes.Tenrai;
 using Server.Entities;
 
 namespace Server.Routes.BugReport.GET;

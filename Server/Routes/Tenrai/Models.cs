@@ -1,11 +1,11 @@
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using Server.Enums;
 using Server.Routes.Review;
 using Server.Utils;
 
-namespace Server.Routes.Jikan;
+namespace Server.Routes.Tenrai;
 
-public record JikanSearchResponse
+public record TenraiSearchResponse
 {
     [JsonPropertyName("pagination")]
     public Pagination Pagination { get; set; } = new();
@@ -13,21 +13,21 @@ public record JikanSearchResponse
     public List<AnimeSearchItem> Data { get; set; } = [];
 }
 
-public record JikanAnimeResponse
+public record TenraiAnimeResponse
 {
     [JsonPropertyName("pagination")]
     public Pagination Pagination { get; set; } = new();
     [JsonPropertyName("data")]
-    public List<JikanAnimeData> Data { get; set; } = [];
+    public List<TenraiAnimeData> Data { get; set; } = [];
 }
 
-public record JikanAnimeDetailResponse
+public record TenraiAnimeDetailResponse
 {
     [JsonPropertyName("data")]
-    public JikanAnimeData Data { get; set; } = new();
+    public TenraiAnimeData Data { get; set; } = new();
 }
 
-public record JikanAnimeData
+public record TenraiAnimeData
 {
     [JsonPropertyName("mal_id")]
     public int MalId { get; set; }
@@ -36,13 +36,13 @@ public record JikanAnimeData
     public string? Url { get; set; }
 
     [JsonPropertyName("titles")]
-    public List<JikanTitle>? Titles { get; set; }
+    public List<TenraiTitle>? Titles { get; set; }
 
     [JsonPropertyName("images")]
-    public JikanImages? Images { get; set; }
+    public TenraiImages? Images { get; set; }
 
     [JsonPropertyName("trailer")]
-    public JikanTrailer? Trailer { get; set; }
+    public TenraiTrailer? Trailer { get; set; }
 
     [JsonPropertyName("synopsis")]
     public string? Synopsis { get; set; }
@@ -72,7 +72,7 @@ public record JikanAnimeData
     public string? Source { get; set; }
 
     [JsonPropertyName("aired")]
-    public JikanAired? Aired { get; set; }
+    public TenraiAired? Aired { get; set; }
 
     [JsonPropertyName("genres")]
     public List<MalObject>? Genres { get; set; }
@@ -96,7 +96,7 @@ public record JikanAnimeData
     public double? Score { get; set; }
 }
 
-public record JikanTitle
+public record TenraiTitle
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
@@ -105,13 +105,13 @@ public record JikanTitle
     public string? Title { get; set; }
 }
 
-public record JikanImages
+public record TenraiImages
 {
     [JsonPropertyName("jpg")]
-    public JikanImageSet? Jpg { get; set; }
+    public TenraiImageSet? Jpg { get; set; }
 }
 
-public record JikanImageSet
+public record TenraiImageSet
 {
     [JsonPropertyName("image_url")]
     public string? ImageUrl { get; set; }
@@ -120,21 +120,21 @@ public record JikanImageSet
     public string? LargeImageUrl { get; set; }
 }
 
-public record JikanTrailer
+public record TenraiTrailer
 {
     [JsonPropertyName("embed_url")]
     public string? EmbedUrl { get; set; }
 }
 
-public record JikanAired
+public record TenraiAired
 {
     [JsonPropertyName("prop")]
-    public JikanAiredProp? Prop { get; set; }
+    public TenraiAiredProp? Prop { get; set; }
     [JsonPropertyName("string")]
     public string? String { get; set; }
 }
 
-public record JikanAiredProp
+public record TenraiAiredProp
 {
     [JsonPropertyName("string")]
     public string? String { get; set; }

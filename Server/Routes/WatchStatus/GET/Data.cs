@@ -1,7 +1,7 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.Exceptions;
-using Server.Routes.Jikan;
+using Server.Routes.Tenrai;
 using System.Text.Json;
 
 namespace Server.Routes.WatchStatus.GET;

@@ -1,13 +1,13 @@
-using FastEndpoints;
+﻿using FastEndpoints;
 using Server.Data;
 using Server.Utils;
 
-namespace Server.Routes.Jikan.Inspect;
+namespace Server.Routes.Tenrai.Inspect;
 
 /// <summary>
-/// Endpoint for inspecting anime details using Jikan API.
+/// Endpoint for inspecting anime details using Tenrai API.
 /// </summary>
-public class JikanInspectEndpoint(AppDbContext ctx) : EndpointWithoutRequest<Anime>
+public class TenraiInspectEndpoint(AppDbContext ctx) : EndpointWithoutRequest<Anime>
 {
     public override void Configure()
     {
@@ -20,7 +20,7 @@ public class JikanInspectEndpoint(AppDbContext ctx) : EndpointWithoutRequest<Ani
         int malId = Route<int>("malId");
         Guid currentUserId = UserUtils.GetAuthenticatedUserID();
 
-        JikanInspectData data = new(ctx);
+        TenraiInspectData data = new(ctx);
 
         return await data.GetAnimeAsync(malId, currentUserId, ct);
     }

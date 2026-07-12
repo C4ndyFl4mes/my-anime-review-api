@@ -1,5 +1,5 @@
-using Server.Enums;
-using Server.Routes.Jikan;
+﻿using Server.Enums;
+using Server.Routes.Tenrai;
 
 namespace Server.Routes.BugReport;
 

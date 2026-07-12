@@ -1,5 +1,5 @@
-using System.Text.Json.Serialization;
-using Server.Routes.Jikan;
+﻿using System.Text.Json.Serialization;
+using Server.Routes.Tenrai;
 using Server.Routes.Review;
 
 namespace Server.Routes.Feed;
@@ -37,4 +37,5 @@ public sealed record ReviewMarkedHelpfulFeedItem : FeedItemBase
 {
     public required ReviewExtended MarkedHelpfulReview { get; set; } // The review that the one user is following marked as helpful.
 }
+
 

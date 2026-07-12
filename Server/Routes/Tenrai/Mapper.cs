@@ -1,11 +1,11 @@
-namespace Server.Routes.Jikan;
+﻿namespace Server.Routes.Tenrai;
 
 /// <summary>
-/// Mapping class for converting Jikan API data models to internal Anime models used in the application.
+/// Mapping class for converting Tenrai API data models to internal Anime models used in the application.
 /// </summary>
-public static class JikanMapping
+public static class TenraiMapping
 {
-    public static Anime ToAnime(this JikanAnimeData d) => new()
+    public static Anime ToAnime(this TenraiAnimeData d) => new()
     {
         MalId = d.MalId,
         Title = d.Titles?.FirstOrDefault(t => t.Type == "English")?.Title ?? d.Titles?.FirstOrDefault(t => t.Type == "Default")?.Title ?? d.Titles?.FirstOrDefault()?.Title ?? string.Empty,
@@ -33,7 +33,7 @@ public static class JikanMapping
         }
     };
 
-    public static AnimeSearchItem ToAnimeSearchItem(this JikanAnimeData d) => new()
+    public static AnimeSearchItem ToAnimeSearchItem(this TenraiAnimeData d) => new()
     {
         MalId = d.MalId,
         Title = d.Titles?.FirstOrDefault(t => t.Type == "English")?.Title ?? d.Titles?.FirstOrDefault(t => t.Type == "Default")?.Title ?? d.Titles?.FirstOrDefault()?.Title ?? string.Empty,

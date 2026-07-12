@@ -1,4 +1,4 @@
-namespace Server.Exceptions;
+﻿namespace Server.Exceptions;
 
 public class BadRequestException(string message) : Exception(message);
 
@@ -10,4 +10,4 @@ public class ConflictException(string message) : Exception(message);
 
 public class InternalServerException(string message) : Exception(message);
 
-public class JikanApiException(string message) : Exception(message);
+public class TenraiApiException(string message) : Exception(message);

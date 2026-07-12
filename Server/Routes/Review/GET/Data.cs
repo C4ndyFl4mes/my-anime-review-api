@@ -1,8 +1,8 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.Entities;
 using Server.Exceptions;
-using Server.Routes.Jikan;
+using Server.Routes.Tenrai;
 
 namespace Server.Routes.Review.GET;
 

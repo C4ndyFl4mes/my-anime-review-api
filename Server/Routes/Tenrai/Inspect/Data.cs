@@ -1,16 +1,16 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Server.Data;
 using Server.Entities;
 using Server.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Server.Routes.Jikan.Inspect;
+namespace Server.Routes.Tenrai.Inspect;
 
 /// <summary>
-/// Data class for fetching anime details from Jikan API and caching them in the database.
+/// Data class for fetching anime details from Tenrai API and caching them in the database.
 /// </summary>
-public class JikanInspectData(AppDbContext ctx)
+public class TenraiInspectData(AppDbContext ctx)
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
     {
@@ -19,10 +19,10 @@ public class JikanInspectData(AppDbContext ctx)
     private HttpClient _httpClient { get; } = new();
 
     /// <summary>
-    /// Fetches anime details from the database if cached and not stale, otherwise fetches from Jikan API and caches it.
+    /// Fetches anime details from the database if cached and not stale, otherwise fetches from Tenrai API and caches it.
     /// </summary>
     /// <returns>The anime details.</returns>
-    /// <exception cref="JikanApiException">Thrown when there is an error fetching or processing anime data from Jikan API.</exception>
+    /// <exception cref="TenraiApiException">Thrown when there is an error fetching or processing anime data from Tenrai API.</exception>
     public async Task<Anime> GetAnimeAsync(int id, Guid currentUserId, CancellationToken ct)
     {
         Anime? existingAnime = await TryGetAnimeAsync(id, ct);
@@ -32,21 +32,21 @@ public class JikanInspectData(AppDbContext ctx)
         HttpResponseMessage response;
         try
         {
-            response = await _httpClient.GetAsync($"https://api.jikan.moe/v4/anime/{id}", ct);
+            response = await _httpClient.GetAsync($"https://api.tenrai.org/v1/anime/{id}", ct);
         }
         catch (HttpRequestException ex)
         {
-            throw new JikanApiException($"Jikan request failed: {ex.Message}");
+            throw new TenraiApiException($"Tenrai request failed: {ex.Message}");
         }
 
         string responseContent = await response.Content.ReadAsStringAsync(ct);
 
         if (!response.IsSuccessStatusCode)
         {
-            JikanErrorResponse? errorResponse = null;
+            TenraiErrorResponse? errorResponse = null;
             try
             {
-                errorResponse = JsonSerializer.Deserialize<JikanErrorResponse>(responseContent, JsonOptions);
+                errorResponse = JsonSerializer.Deserialize<TenraiErrorResponse>(responseContent, JsonOptions);
             }
             catch (JsonException)
             {
@@ -54,20 +54,20 @@ public class JikanInspectData(AppDbContext ctx)
             }
 
             string message = errorResponse?.Message ??
-                $"Jikan returned HTTP {(int)response.StatusCode} ({response.StatusCode}).";
-            throw new JikanApiException(message);
+                $"Tenrai returned HTTP {(int)response.StatusCode} ({response.StatusCode}).";
+            throw new TenraiApiException(message);
         }
 
-        JikanAnimeDetailResponse payload;
+        TenraiAnimeDetailResponse payload;
 
         try
         {
-            payload = JsonSerializer.Deserialize<JikanAnimeDetailResponse>(responseContent, JsonOptions) ??
-                throw new JikanApiException("Jikan returned an empty response.");
+            payload = JsonSerializer.Deserialize<TenraiAnimeDetailResponse>(responseContent, JsonOptions) ??
+                throw new TenraiApiException("Tenrai returned an empty response.");
         }
         catch (JsonException ex)
         {
-            throw new JikanApiException($"Failed to parse Jikan response: {ex.Message}");
+            throw new TenraiApiException($"Failed to parse Tenrai response: {ex.Message}");
         }
 
         try
@@ -127,7 +127,7 @@ public class JikanInspectData(AppDbContext ctx)
         }
         catch (DbUpdateException ex)
         {
-            throw new JikanApiException($"Failed to save anime data to the database: {ex.Message}");
+            throw new TenraiApiException($"Failed to save anime data to the database: {ex.Message}");
         }
     }
 
@@ -221,7 +221,7 @@ public class JikanInspectData(AppDbContext ctx)
         };
     }
 
-    private record JikanErrorResponse
+    private record TenraiErrorResponse
     {
         [JsonPropertyName("status")]
         public int Status { get; set; }
