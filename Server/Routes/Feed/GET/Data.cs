@@ -1,12 +1,20 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.Enums;
 using Server.Routes.Review;
+using Server.Routes.Tenrai;
 
 namespace Server.Routes.Feed.GET;
 
 public class GetFeedData(AppDbContext ctx)
 {
+
+    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
     public async Task<FeedResponse> GetFeedAsync(Guid currentUserId, int page, int pageSize, CancellationToken ct)
     {
         int safePageSize = Math.Clamp(pageSize <= 0 ? 20 : pageSize, 1, 50);
@@ -112,7 +120,8 @@ public class GetFeedData(AppDbContext ctx)
                 AnimeTitle = ws.Anime.Title,
                 AnimeImageUrl = ws.Anime.ImageUrl,
                 AnimeAgeRating = ws.Anime.AgeRating,
-                AnimeType = ws.Anime.Type
+                AnimeType = ws.Anime.Type,
+                Genres = DeserializeAnimeMetaData(ws.Anime.MetaDataJSON!).Genres ?? new List<MalObject>()
             })
             .ToListAsync(ct);
 
@@ -149,6 +158,11 @@ public class GetFeedData(AppDbContext ctx)
             },
             FeedItems = items
         };
+    }
+
+    private static AnimeMetaData DeserializeAnimeMetaData(string AnimeMetaDataJson)
+    {
+        return JsonSerializer.Deserialize<AnimeMetaData>(AnimeMetaDataJson, JsonOptions) ?? new AnimeMetaData();
     }
 
     private static FeedItemBase MapToFeedItem(FeedEventRow e)
@@ -190,7 +204,7 @@ public class GetFeedData(AppDbContext ctx)
                 ImageUrl = e.AnimeImageUrl,
                 AgeRating = e.AnimeAgeRating,
                 Type = e.AnimeType,
-                Genres = []
+                Genres = e.Genres
             }
         };
     }
@@ -248,5 +262,6 @@ public class GetFeedData(AppDbContext ctx)
         public string? AnimeImageUrl { get; set; }
         public AgeRating? AnimeAgeRating { get; set; }
         public AnimeType? AnimeType { get; set; }
+        public List<MalObject> Genres { get; set; } = [];
     }
 }
