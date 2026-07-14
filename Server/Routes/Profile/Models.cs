@@ -24,3 +24,8 @@ public record ChangeProfileImageResponse
     public string ProfileImageURL { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;
 }
+
+public record ProfileImageResponse
+{
+    public string ProfileImageURL { get; set; } = string.Empty;
+}
