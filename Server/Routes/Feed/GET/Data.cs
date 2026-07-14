@@ -121,6 +121,10 @@ public class GetFeedData(AppDbContext ctx)
                 AnimeImageUrl = ws.Anime.ImageUrl,
                 AnimeAgeRating = ws.Anime.AgeRating,
                 AnimeType = ws.Anime.Type,
+                WatchStatus = ctx.WatchStatuses
+                    .Where(w => w.UserId == currentUserId && w.AnimeId == ws.AnimeId)
+                    .Select(w => w.Status.ToString())
+                    .FirstOrDefault(),
                 Score = ws.Anime.Reviews.Average(r => (double?)r.Score),
                 Genres = DeserializeAnimeMetaData(ws.Anime.MetaDataJSON!).Genres ?? new List<MalObject>()
             })
@@ -205,6 +209,7 @@ public class GetFeedData(AppDbContext ctx)
                 ImageUrl = e.AnimeImageUrl,
                 AgeRating = e.AnimeAgeRating,
                 Type = e.AnimeType,
+                CurrentUserWatchStatus = e.WatchStatus,
                 Score = e.Score,
                 Genres = e.Genres
             }
@@ -266,5 +271,6 @@ public class GetFeedData(AppDbContext ctx)
         public AnimeType? AnimeType { get; set; }
         public List<MalObject> Genres { get; set; } = [];
         public double? Score { get; set; }
+        public string? WatchStatus { get; set; }
     }
 }
