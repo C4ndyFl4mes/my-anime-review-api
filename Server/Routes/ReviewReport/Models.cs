@@ -21,7 +21,6 @@ public record GetReviewReportsResponse
 public record ReviewReport
 {
     public Guid Id { get; set; }
-    public Guid ReportedReviewId { get; set; }
     public DateTime CreatedAt { get; set; }
-    public string Text { get; set; } = string.Empty;
+    public required Review.Review ReportedReview { get; set; }
 }

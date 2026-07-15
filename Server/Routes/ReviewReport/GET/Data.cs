@@ -15,14 +15,26 @@ public class GetReviewReportsData(AppDbContext ctx)
 
         List<ReviewReport> reports = await ctx.ReportedReviews
             .Include(r => r.ReportedReview)
+            .ThenInclude(r => r.User)
             .Skip((safePage - 1) * PerPage)
             .Take(PerPage)
             .Select(r => new ReviewReport
             {
                 Id = r.Id,
-                ReportedReviewId = r.ReportedReviewId,
                 CreatedAt = r.CreatedAt,
-                Text = r.ReportedReview.Text
+                ReportedReview = new()
+                {
+                    Id = r.ReportedReview.Id,
+                    UserId = r.ReportedReview.UserId,
+                    Text = r.ReportedReview.Text,
+                    Score = r.ReportedReview.Score,
+                    Username = r.ReportedReview.User.Username,
+                    ProfileImageURL = r.ReportedReview.User.ProfileImageURL,
+                    CreatedAt = r.ReportedReview.CreatedAt,
+                    UpdatedAt = r.ReportedReview.UpdatedAt,
+                    HelpfulCount = r.ReportedReview.HelpfulByUsers.Count,
+                    IsHelpfulByCurrentUser = false
+                }
             })
             .ToListAsync(ct);
         
