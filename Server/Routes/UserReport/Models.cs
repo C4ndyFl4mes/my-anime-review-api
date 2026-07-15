@@ -22,7 +22,14 @@ public record GetUserReportsResponse
 public record UserReport
 {
     public Guid Id { get; set; }
-    public Guid ReportedUserId { get; set; }
+    public required SimpleUser ReportedUser { get; set; }
     public required string Reason { get; set; }
     public DateTime CreatedAt { get; set; }
+}
+
+public record SimpleUser
+{
+    public Guid Id { get; set; }
+    public string Username { get; set; } = string.Empty;
+    public string ProfileImageURL { get; set; } = string.Empty;
 }

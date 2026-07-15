@@ -14,12 +14,18 @@ public class GetUserReportsData(AppDbContext ctx)
         int safePage = Math.Clamp(page, 1, lastVisiblePage);
 
         List<UserReport> reports = await ctx.ReportedUsers
+            .Include(r => r.ReportedUser)
             .Skip((safePage - 1) * PerPage)
             .Take(PerPage)
             .Select(r => new UserReport
             {
                 Id = r.Id,
-                ReportedUserId = r.ReportedUserId,
+                ReportedUser = new()
+                {
+                    Id = r.ReportedUser.Id,
+                    Username = r.ReportedUser.Username,
+                    ProfileImageURL = r.ReportedUser.ProfileImageURL
+                },
                 Reason = r.Reason,
                 CreatedAt = r.CreatedAt
             })
