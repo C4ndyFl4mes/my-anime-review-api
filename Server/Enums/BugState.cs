@@ -9,7 +9,7 @@ public enum BugState
     Pending,
     [JsonStringEnumMemberName("Planned")]
     Planned,
-    [JsonStringEnumMemberName("In Progress")]
+    [JsonStringEnumMemberName("InProgress")]
     InProgress,
     [JsonStringEnumMemberName("Completed")]
     Completed,
