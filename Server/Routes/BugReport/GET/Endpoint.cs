@@ -15,15 +15,18 @@ public class GetBugReportsEndpoint(AppDbContext ctx) : EndpointWithoutRequest<Ge
 
     public override async Task<GetBugReportsResponse> ExecuteAsync(CancellationToken ct)
     {
-        string? state = Query<string>("state", isRequired: false); // When state is null, it will list all bug reports regardless of their state.
+        string state = Query<string>("state", isRequired: true) ?? "All";
         int page = Query<int>("page", isRequired: false);
         if (page < 1)
             page = 1;
-        
-        if (!Enum.TryParse(state, true, out BugState parsedState) && state is not null)
+
+        bool hasState = !state.Equals("All", StringComparison.OrdinalIgnoreCase);
+        BugState parsedState = default;
+
+        if (hasState && !Enum.TryParse(state, true, out parsedState))
             throw new BadRequestException("Invalid state value. Allowed values are: Pending, Planned, InProgress, Completed, Rejected.");
         
         GetBugReportsData data = new(ctx);
-        return await data.GetBugReportsAsync(state is not null ? parsedState : null, page, ct);
+        return await data.GetBugReportsAsync(hasState ? parsedState : null, page, ct);
     }
 }
