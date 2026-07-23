@@ -1,7 +1,7 @@
 # My Anime Review API
 
 ## Description
-This API integrates with TenraiAPI to make an application that handles a review system for anime. Go to the [architecture-repo](https://github.com/C4ndyFl4mes/my-anime-review-architecture) for installation guide. The API is written in C# as an ASP.NET WebAPI application. Entity Framework is used to generate the database from the entities definied under /Server/Entities. Very basic Identity is used for authentication.
+This API integrates with TenraiAPI to make an application that handles a review system for anime. Go to the [architecture-repo](https://github.com/C4ndyFl4mes/my-anime-review-architecture) for deployment guides. The API is written in C# as an ASP.NET WebAPI application. Entity Framework is used to generate the database from the entities definied under /Server/Entities. Very basic Identity is used for authentication. The interface can be found in [this repo](https://github.com/C4ndyFl4mes/my-anime-review-application).
 
 ## Database
 The database is PostgreSQL. This is the following entities/tables:
