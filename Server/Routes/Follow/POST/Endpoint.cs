@@ -9,7 +9,7 @@ public class FollowPostEndpoint(AppDbContext ctx) : Endpoint<FollowPostRequest, 
     public override void Configure()
     {
         Post("/follow");
-        Roles("User", "Roles");
+        Roles("User", "Admin");
     }
 
     public override async Task<FollowPostResponse> ExecuteAsync(FollowPostRequest request, CancellationToken ct)
